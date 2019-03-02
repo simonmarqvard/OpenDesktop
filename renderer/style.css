@@ -1,5 +1,14 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  background-color: blue
+  background-color: white;
+}
+
+.fileElement {
+  margin-top: 15px;
+  width: 200px;
+  height: 30px;
+  border: 2px solid black;
+  background-color: red;
 }

@@ -15,6 +15,25 @@ httpServer.listen(8080, () => {
 
 var io = socket(httpServer);
 
+let members = 0;
+
 io.sockets.on("connection", socket => {
-  console.log("we have a connection" + socket.id);
+  console.log("we have a connection: " + socket.id);
+  members++;
+  console.log(members);
+
+  socket.on("getFiles", data => {
+    socket.broadcast.emit("fileReq");
+  });
+
+  socket.on("returnfrommain", data => {
+    console.log("this is coming back from others pc main : " + data);
+    socket.broadcast.emit("finalDestination", data);
+  });
+
+  socket.on("disconnect", socket => {
+    console.log("user disconnected");
+    members--;
+    console.log(members);
+  });
 });

@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-    <link rel="stylesheet" href="./style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <h1>Hello World!</h1>
-    Hello world
-    Test template
-    <script>
-    console.log('hello')
-      let socket = io("http://localhost:8080")
+    <div id="wrapper">
+      <h1>Display Desktop</h1>
+      <p>files from other computer</p>
+      <button id="addFiles">show files via sockets</button>
+      <div id="files"></div>
+    </div>
 
-      socket.on('newuser', (data) => {
-        console.log(data);
-      })
-      // You can also require other files to run in this process
-      require('./renderer.js')
+    <script>
+      console.log("running renderer");
+      require("./renderer.js");
     </script>
   </body>
 </html>

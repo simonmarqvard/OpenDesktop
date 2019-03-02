@@ -1,5 +1,7 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const fs = require("fs");
+const os = require("os");
 
 let mainWindow = require("./browserWindow.js");
 
@@ -23,4 +25,17 @@ app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) mainWindow.createWindow();
+});
+
+const testfolder = `${os.homedir}/Desktop/`;
+
+ipcMain.on("channel1", (e, args) => {
+  fs.readdir(testfolder, (err, files) => {
+    e.sender.send(
+      "channel1",
+      JSON.stringify({
+        files: files
+      })
+    );
+  });
 });
