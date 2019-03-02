@@ -21,6 +21,7 @@ exports.createWindow = () => {
   // and load the index.html of the app.
   this.win.loadURL(`file://${__dirname}/renderer/index.html`)
 
+
   // Emitted when the window is closed.
   this.win.on('closed', () => {
     this.win = null
