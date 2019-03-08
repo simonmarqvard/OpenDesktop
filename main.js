@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const os = require("os");
+const username = require("username");
 
 let mainWindow = require("./browserWindow.js");
 
@@ -27,15 +28,28 @@ app.on("activate", () => {
   if (mainWindow === null) mainWindow.createWindow();
 });
 
-const testfolder = `${os.homedir}/Desktop/`;
-
-ipcMain.on("channel1", (e, args) => {
-  fs.readdir(testfolder, (err, files) => {
-    e.sender.send(
-      "channel1",
-      JSON.stringify({
-        files: files
-      })
-    );
-  });
-});
+// const testfolder = `${os.homedir}/Desktop/`;
+//
+// ipcMain.on("channel1", (e, args) => {
+//   fs.readdir(testfolder, (err, files) => {
+//     e.sender.send(
+//       "channel1",
+//       JSON.stringify({
+//         files: files
+//       })
+//     );
+//   });
+// });
+//
+// const myDesktop = `${os.homedir}/Desktop`;
+// ipcMain.on("requestmyfiles", (e, args) => {
+//   fs.readdir(myDesktop, (err, files) => {
+//     console.log("messageREC");
+//     e.sender.send(
+//       "myfiles",
+//       JSON.stringify({
+//         files: files
+//       })
+//     );
+//   });
+// });

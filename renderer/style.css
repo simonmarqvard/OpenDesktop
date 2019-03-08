@@ -5,10 +5,56 @@ body {
   background-color: white;
 }
 
+#containUserAndFiles {
+  display: flex;
+  flex-direction: horizontal;
+  background-color: lightblue;
+  width: 1000px;
+  height: 1000px;
+}
+
+.newComputer {
+  display: flex;
+  flex-direction: column;
+  background-color: purple;
+  width: 100px;
+  height: 50px;
+}
+
+.ComputerName {
+  background-color: green;
+}
+
+#otherComputer {
+  display: flex;
+  flex-direction: column;
+  background-color: orange;
+}
+
 .fileElement {
   margin-top: 15px;
   width: 200px;
   height: 30px;
   border: 2px solid black;
   background-color: red;
+}
+
+.myfiles {
+  margin-top: 15px;
+  width: 100%;
+  height: 30px;
+  border: 2px solid black;
+  background-color: Green;
+}
+
+[id="0"] {
+  background-color: orange;
+}
+
+[id="1"] {
+  background-color: cyan;
+}
+
+[id="3"] {
+  background-color: white;
 }
