@@ -18,15 +18,15 @@ socket.on("getUserName", () => {
 });
 
 socket.on("onlineUsers", users => {
-  console.log(users);
+  // console.log(users);
   let container = document.getElementById("containUserAndFiles");
 
   let html = "";
   users.forEach((user, i) => {
     let userblock = `<div class="newComputer">
-      <div class="ComputerName"> ${user.username}</div>
+      <div class="ComputerName" id="user-${i}"> ${user.username}</div>
       <button id="btn-${i}" class="btn"> show files </button>
-      <div id="cls-${i}" class="listOfFiles"> </div>
+      <div id="cls-${i}" class="listOfFiles-${i}"> </div>
     </div>`;
     html += userblock;
   });
@@ -34,23 +34,46 @@ socket.on("onlineUsers", users => {
 
   const buttons = document.querySelectorAll(".btn");
 
-  buttons.forEach((button, i) => {
+  buttons.forEach((button, i, state) => {
+    state = false;
     button.addEventListener("click", () => {
-      console.log("you clicked button");
-      console.log(users[i]);
-      let list = document.getElementById(`cls-${i}`);
-      const testfolder = `${os.homedir}/Desktop/`;
-      fs.readdir(testfolder, (err, files) => {
-        files.forEach(element => addFileElement(element, list));
-      });
+      state = !state;
+
+      if (state) {
+        showFiles(i, button);
+      } else {
+        hideFiles(i, button);
+      }
     });
   });
 });
 
-function addFileElement(text, list) {
+function showFiles(i, button) {
+  console.log("showfiles");
+  button.innerHTML = "hide files";
+  let list = document.getElementById(`cls-${i}`);
+  // console.log(list);
+  const testfolder = `${os.homedir}/Desktop/`;
+  fs.readdir(testfolder, (err, files) => {
+    files.forEach((element, i) => addFileElement(element, list, i));
+  });
+}
+
+function hideFiles(i, button) {
+  console.log("hideFiles");
+  // button.innerHTML = "show";
+  button.innerHTML = "show files";
+  let list = document.getElementById(`cls-${i}`);
+  list.innerHTML = "";
+}
+
+function addFileElement(content, list, i) {
+  let columnNumber = list.id.split("-")[1];
   let myfiles = document.createElement("div");
-  myfiles.setAttribute("class", "myfiles");
-  let myContent = document.createTextNode(text);
+  myfiles.setAttribute("class", `myfiles`);
+  myfiles.setAttribute("id", `file-${i}`);
+  myfiles.setAttribute("name", `columnNumber-${columnNumber}`);
+  let myContent = document.createTextNode(content);
   myfiles.appendChild(myContent);
   list.appendChild(myfiles);
 }
