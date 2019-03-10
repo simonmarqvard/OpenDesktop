@@ -5,14 +5,6 @@ body {
   background-color: white;
 }
 
-#containUserAndFiles {
-  display: flex;
-  flex-direction: horizontal;
-  background-color: lightblue;
-  width: 1000px;
-  height: 1000px;
-}
-
 .newComputer {
   display: flex;
   flex-direction: column;
@@ -57,4 +49,34 @@ body {
 
 [id="3"] {
   background-color: white;
+}
+/* ************* */
+
+.username {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background-color: green;
+}
+
+.listOfFiles {
+  /* background-color: red; */
+}
+
+.file {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: lightgrey;
+  margin: 10px;
+  border: 1px solid black;
+}
+
+#containUserAndFiles {
+  display: flex;
+  flex-direction: horizontal;
+  background-color: lightblue;
+  width: 1000px;
+  height: 100%;
 }
