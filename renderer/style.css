@@ -60,6 +60,7 @@ body {
 }
 
 .listOfFiles {
+  margin-left: 10px;
   /* background-color: red; */
 }
 
@@ -69,8 +70,13 @@ body {
   text-align: center;
   vertical-align: middle;
   background-color: lightgrey;
+  transition: background-color 0.3s ease;
   margin: 10px;
   border: 1px solid black;
+}
+
+.file:hover {
+  background: grey;
 }
 
 #containUserAndFiles {
@@ -79,4 +85,12 @@ body {
   background-color: lightblue;
   width: 1000px;
   height: 100%;
+}
+
+.hover {
+  outline: 3px solid rgba(255, 0, 0, 0.5);
+}
+
+.dragOutline {
+  outline: 5px solid orange;
 }

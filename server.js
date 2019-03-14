@@ -44,11 +44,10 @@ io.sockets.on("connection", socket => {
   ss(socket).on("streamToServer", (stream, data) => {
     const outgoingstream = ss.createStream();
     const userToReceiveData = data.receiver;
-    const dataToSend = data.files;
-
     const connection = io.sockets.connected[userToReceiveData];
 
-    ss(connection).emit("fileStreamFromServer", outgoingstream, dataToSend);
+    ss(connection).emit("fileStreamFromServer", outgoingstream, data);
+    console.log("HELLP :  ", data);
     stream.pipe(outgoingstream);
   });
 

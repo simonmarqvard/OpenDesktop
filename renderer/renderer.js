@@ -10,7 +10,9 @@ const container = document.getElementById("containUserAndFiles");
 //connect to server
 socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
-  const testfolder = `${os.homedir}/Desktop/`;
+  const electronFileTestFolder = process.env.FOLDER;
+  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+  console.log(testfolder);
   let files = [];
   fs.readdir(testfolder, (err, files) => {
     username().then(name =>
@@ -51,7 +53,7 @@ function displayUser(user) {
 
   let userblock = `<div class="user">
         <div class="username"> ${user.username} </div>
-        <div class="listOfFiles">${fileList}</div>
+        <div class="listOfFiles" data-user="${user.id}">${fileList}</div>
       </div>`;
 
   container.innerHTML += userblock;
@@ -62,19 +64,29 @@ function addListeners() {
   const files = document.querySelectorAll(".file");
   files.forEach(file => {
     file.addEventListener("dragstart", e => {
-      // change css to make it look like it's dragging
+      file.classList.add("dragOutline");
       curDrag = e.target;
+    });
+    file.addEventListener("dragend", e => {
+      file.classList.remove("dragOutline");
     });
   });
 
   const lists = document.querySelectorAll(".listOfFiles");
   lists.forEach(list => {
-    list.addEventListener("dragover", e => e.preventDefault());
+    list.addEventListener("dragover", e => {
+      e.preventDefault();
+      list.classList.add("hover");
+    });
+    list.addEventListener("dragleave", e => {
+      list.classList.remove("hover");
+    });
     list.addEventListener("drop", e => {
       e.preventDefault();
       let sender = curDrag.getAttribute("data-user");
       let filename = curDrag.getAttribute("data-filename");
       let receiver = e.target.getAttribute("data-user");
+      console.log(`rec: ${receiver}, sender: ${sender}`);
 
       let fileTransfer = {
         from: sender,
@@ -88,68 +100,6 @@ function addListeners() {
 
 ss(socket).on("fileStreamFromServer", (stream, data) => {
   console.log("I received file");
-  console.log(stream);
-  console.log(data);
+  const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
+  stream.pipe(fs.createWriteStream(testfile));
 });
-// socket.on("onlineUsers", users => {
-//   console.log(users);
-//   let container = document.getElementById("containUserAndFiles");
-//
-//   let html = "";
-//   users.forEach((user, i) => {
-//     let userblock = `<div class="newComputer">
-//       <div class="ComputerName" id="${user.username}"> ${user.username}</div>
-//       <button id="btn-${i}" class="btn"> show files </button>
-//       <div id="cls-${i}" class="listOfFiles-${i}"> </div>
-//     </div>`;
-//     html += userblock;
-//   });
-//   container.innerHTML = html;
-//
-//   const buttons = document.querySelectorAll(".btn");
-//
-//   buttons.forEach((button, i, state) => {
-//     state = false;
-//     button.addEventListener("click", () => {
-//       state = !state;
-//       if (state) {
-//         showFiles(i, button);
-//       } else {
-//         hideFiles(i, button);
-//       }
-//     });
-//   });
-// });
-//
-// function showFiles(i, button) {
-//   console.log("showfiles");
-//   button.innerHTML = "hide files";
-//   const list = document.getElementById(`cls-${i}`);
-//   // let userFileLocation = document.getElementById(`${user.username}`);
-//   // console.log(userFileLocation);
-//   const testfolder = `${os.homedir}/Desktop/`;
-//   fs.readdir(testfolder, (err, files) => {
-//     files.forEach((element, i) => addFileElement(element, list, i));
-//   });
-// }
-//
-// function hideFiles(i, button) {
-//   console.log("hideFiles");
-//   // button.innerHTML = "show";
-//   button.innerHTML = "show files";
-//   let list = document.getElementById(`cls-${i}`);
-//   list.innerHTML = "";
-// }
-//
-// function addFileElement(content, list, i) {
-//   let columnNumber = list.id.split("-")[1];
-//   let myfiles = document.createElement("div");
-//   myfiles.setAttribute("class", `myfiles`);
-//   myfiles.setAttribute("id", `file-${i}`);
-//   myfiles.setAttribute("name", `columnNumber-${columnNumber}`);
-//   myfiles.setAttribute("data-Filename", `${content}`);
-//   // myfiles.setAttribute("data-orgLoc", )
-//   let myContent = document.createTextNode(content);
-//   myfiles.appendChild(myContent);
-//   list.appendChild(myfiles);
-// }
