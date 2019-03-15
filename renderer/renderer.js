@@ -1,46 +1,27 @@
 const { ipcRenderer } = require("electron");
 const username = require("username");
-const os = require("os");
-const fs = require("fs");
+
+// Sockets
+// ----------------------------------------------
+
+ipcRenderer.on("updateUsers", updateUsers);
+
+ipcRenderer.send("browserReady");
+
+// Functions
+// ----------------------------------------------
 
 //socket
-const socket = io("http://localhost:8080");
+// const socket = io("http://localhost:8080");
 const container = document.getElementById("containUserAndFiles");
 
-//connect to server
-socket.on("connect", () => {
-  console.log("you connected to socket" + socket.id);
-  const electronFileTestFolder = process.env.FOLDER;
-  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
-  console.log(testfolder);
-  let files = [];
-  fs.readdir(testfolder, (err, files) => {
-    username().then(name =>
-      socket.emit("newUser", { name: name, files: files })
-    );
-  });
-});
-
-socket.on("reqStreamFromUser", data => {
-  console.log(data);
-  const stream = ss.createStream();
-  const fileToSend = data.file;
-  ss(socket).emit("streamToServer", stream, {
-    receiver: data.to,
-    name: fileToSend
-  });
-  console.log(`sending ${fileToSend}`);
-  const blobStream = ss.createBlobReadStream(fileToSend).pipe(stream);
-});
-
-socket.on("updateUsers", onlineUsers => {
-  // console.log(onlineUsers);
+function updateUsers(event, onlineUsers) {
   container.innerHTML = "";
   onlineUsers.forEach(user => {
     displayUser(user);
   });
   addListeners();
-});
+}
 
 function displayUser(user) {
   // make list of files
@@ -62,6 +43,7 @@ function displayUser(user) {
 function addListeners() {
   let curDrag;
   const files = document.querySelectorAll(".file");
+
   files.forEach(file => {
     file.addEventListener("dragstart", e => {
       file.classList.add("dragOutline");
@@ -87,19 +69,12 @@ function addListeners() {
       let filename = curDrag.getAttribute("data-filename");
       let receiver = e.target.getAttribute("data-user");
       console.log(`rec: ${receiver}, sender: ${sender}`);
-
       let fileTransfer = {
         from: sender,
         to: receiver,
         file: filename
       };
-      socket.emit("fileTransferReq", fileTransfer);
+      ipcRenderer.send("fileTransferReq", fileTransfer);
     });
   });
 }
-
-ss(socket).on("fileStreamFromServer", (stream, data) => {
-  console.log("I received file");
-  const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
-  stream.pipe(fs.createWriteStream(testfile));
-});

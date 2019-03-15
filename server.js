@@ -1,10 +1,10 @@
-let express = require("express");
-let bodyParser = require("body-parser");
-let server = express();
-let socket = require("socket.io");
-let ss = require("socket.io-stream");
-let http = require("http");
-let path = require("path");
+const express = require("express");
+const bodyParser = require("body-parser");
+const server = express();
+const socket = require("socket.io");
+const ss = require("socket.io-stream");
+const http = require("http");
+const path = require("path");
 // let ss = require("socket.io-stream");
 
 server.use("/", express.static("public"));
@@ -24,12 +24,18 @@ io.sockets.on("connection", socket => {
   console.log("we have a connection: " + socket.id);
 
   socket.on("newUser", userData => {
+    console.log("server new user");
     let user = {
       id: socket.id,
       username: userData.name,
       files: userData.files
     };
+    console.log(userData);
     arrayOfUsers.push(user);
+    io.emit("updateUsers", arrayOfUsers);
+  });
+
+  socket.on("getUsers", userData => {
     io.emit("updateUsers", arrayOfUsers);
   });
 
@@ -47,7 +53,6 @@ io.sockets.on("connection", socket => {
     const connection = io.sockets.connected[userToReceiveData];
 
     ss(connection).emit("fileStreamFromServer", outgoingstream, data);
-    console.log("HELLP :  ", data);
     stream.pipe(outgoingstream);
   });
 
@@ -57,7 +62,7 @@ io.sockets.on("connection", socket => {
       if (arrayOfUsers[i].id == socket.id) {
         arrayOfUsers.splice(i, 1);
       }
-      // console.log(arrayOfUsers);
+      console.log(arrayOfUsers);
       io.sockets.emit("updateUsers", arrayOfUsers);
     }
   });

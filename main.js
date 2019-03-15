@@ -1,10 +1,11 @@
-// Modules to control application life and create native browser window
+const io = require("socket.io-client");
+const ss = require("socket.io-stream");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
 const os = require("os");
 const username = require("username");
 
-let mainWindow = require("./browserWindow.js");
+let win;
 
 require("electron-reload")(__dirname);
 
@@ -12,7 +13,24 @@ require("electron-reload")(__dirname);
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  mainWindow.createWindow();
+  win = new BrowserWindow({
+    width: 1000,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+
+  // Open the DevTools.
+  win.webContents.openDevTools();
+
+  // and load the index.html of the app.
+  win.loadURL(`file://${__dirname}/renderer/index.html`);
+
+  // Emitted when the window is closed.
+  win.on("closed", () => {
+    win = null;
+  });
 });
 
 // Quit when all windows are closed.
@@ -28,28 +46,73 @@ app.on("activate", () => {
   if (mainWindow === null) mainWindow.createWindow();
 });
 
-// const testfolder = `${os.homedir}/Desktop/`;
-//
-// ipcMain.on("channel1", (e, args) => {
-//   fs.readdir(testfolder, (err, files) => {
-//     e.sender.send(
-//       "channel1",
-//       JSON.stringify({
-//         files: files
-//       })
-//     );
-//   });
-// });
-//
-// const myDesktop = `${os.homedir}/Desktop`;
-// ipcMain.on("requestmyfiles", (e, args) => {
-//   fs.readdir(myDesktop, (err, files) => {
-//     console.log("messageREC");
-//     e.sender.send(
-//       "myfiles",
-//       JSON.stringify({
-//         files: files
-//       })
-//     );
-//   });
-// });
+// Sockets
+// ----------------------------------------------
+
+const socket = io("http://localhost:8080");
+
+socket.on("connect", () => {
+  console.log("you connected to socket" + socket.id);
+});
+
+socket.on("updateUsers", onlineUsers => {
+  console.log(onlineUsers);
+  win.webContents.send("updateUsers", onlineUsers);
+});
+
+socket.on("reqStreamFromUser", data => {
+  const fileToSend = data.file;
+  const localFile = `${os.homedir}/Desktop/${process.env.FOLDER}/${fileToSend}`;
+  console.log(`sending ${fileToSend}`);
+
+  const stream = ss.createStream();
+  ss(socket).emit("streamToServer", stream, {
+    receiver: data.to,
+    name: fileToSend
+  });
+
+  const blobStream = fs.createReadStream(localFile).pipe(stream);
+
+  blobStream.on("error", e => {
+    console.log(e);
+  });
+
+  //show upload progress
+  let size = 0;
+  blobStream.on("data", function(chunk) {
+    size += chunk.length;
+    console.log(Math.floor((size / fileToSend.size) * 100) + "%");
+  });
+});
+
+ss(socket).on("fileStreamFromServer", (stream, data) => {
+  console.log("I received file");
+  console.log(stream);
+  const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
+  stream.pipe(fs.createWriteStream(testfile));
+});
+
+// ICP
+// ----------------------------------------------
+
+let hasSentNewUser = false;
+
+ipcMain.on("browserReady", (event, fileTransfer) => {
+  if (!hasSentNewUser) {
+    const electronFileTestFolder = process.env.FOLDER;
+    const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+    let files = [];
+    fs.readdir(testfolder, (err, files) => {
+      username().then(name =>
+        socket.emit("newUser", { name: name, files: files })
+      );
+    });
+    hasSentNewUser = true;
+  } else {
+    socket.emit("getUsers");
+  }
+});
+
+ipcMain.on("fileTransferReq", (event, fileTransfer) => {
+  socket.emit("fileTransferReq", fileTransfer);
+});
