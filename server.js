@@ -35,10 +35,6 @@ io.sockets.on("connection", socket => {
     io.emit("updateUsers", arrayOfUsers);
   });
 
-  socket.on("getUsers", userData => {
-    io.emit("updateUsers", arrayOfUsers);
-  });
-
   socket.on("fileTransferReq", data => {
     const user = arrayOfUsers.find(user => user.id === data.to);
     user.files.push(data.file);

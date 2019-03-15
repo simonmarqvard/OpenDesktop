@@ -1,12 +1,63 @@
-const { ipcRenderer } = require("electron");
+const io = require("socket.io-client");
+const ss = require("socket.io-stream");
+const fs = require("fs");
+const os = require("os");
 const username = require("username");
 
 // Sockets
 // ----------------------------------------------
 
-ipcRenderer.on("updateUsers", updateUsers);
+const socket = io("http://localhost:8080");
 
-ipcRenderer.send("browserReady");
+socket.on("connect", () => {
+  console.log("you connected to socket" + socket.id);
+
+  const electronFileTestFolder = process.env.FOLDER;
+  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+  let files = [];
+  fs.readdir(testfolder, (err, files) => {
+    username().then(name =>
+      socket.emit("newUser", { name: name, files: files })
+    );
+  });
+});
+
+socket.on("updateUsers", onlineUsers => {
+  console.log(onlineUsers);
+  updateUsers(onlineUsers);
+});
+
+socket.on("reqStreamFromUser", data => {
+  const fileToSend = data.file;
+  const localFile = `${os.homedir}/Desktop/${process.env.FOLDER}/${fileToSend}`;
+  console.log(`sending ${fileToSend}`);
+
+  const stream = ss.createStream();
+  ss(socket).emit("streamToServer", stream, {
+    receiver: data.to,
+    name: fileToSend
+  });
+
+  const blobStream = fs.createReadStream(localFile).pipe(stream);
+
+  blobStream.on("error", e => {
+    console.log(e);
+  });
+
+  //show upload progress
+  let size = 0;
+  blobStream.on("data", function(chunk) {
+    size += chunk.length;
+    console.log(Math.floor((size / fileToSend.size) * 100) + "%");
+  });
+});
+
+ss(socket).on("fileStreamFromServer", (stream, data) => {
+  console.log("I received file");
+  console.log(stream);
+  const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
+  stream.pipe(fs.createWriteStream(testfile));
+});
 
 // Functions
 // ----------------------------------------------
@@ -15,7 +66,7 @@ ipcRenderer.send("browserReady");
 // const socket = io("http://localhost:8080");
 const container = document.getElementById("containUserAndFiles");
 
-function updateUsers(event, onlineUsers) {
+function updateUsers(onlineUsers) {
   container.innerHTML = "";
   onlineUsers.forEach(user => {
     displayUser(user);
@@ -74,7 +125,7 @@ function addListeners() {
         to: receiver,
         file: filename
       };
-      ipcRenderer.send("fileTransferReq", fileTransfer);
+      socket.emit("fileTransferReq", fileTransfer);
     });
   });
 }
