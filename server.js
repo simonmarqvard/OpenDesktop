@@ -29,7 +29,8 @@ io.sockets.on("connection", socket => {
     let user = {
       id: socket.id,
       username: userData.name,
-      files: userData.files
+      files: userData.files,
+      size: userData.size
     };
     console.log(userData);
     arrayOfUsers.push(user);
@@ -46,6 +47,7 @@ io.sockets.on("connection", socket => {
       console.log("file exists");
     } else {
       user.files.push(data.file);
+      user.size.push(data.size);
       io.emit("updateUsers", arrayOfUsers);
       let fromUser = data.from;
       io.to(fromUser).emit("reqStreamFromUser", data);

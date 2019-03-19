@@ -17,22 +17,28 @@ socket.on("connect", () => {
   const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
   let files = [];
 
+  let fileSize = [];
+
   fs.readdir(testfolder, (err, files) => {
     files.map(file => {
       let path = `${testfolder}/${file}`;
-      fs.lstat(path, (err, stat) => {
-        if (!stat.isDirectory()) {
-          arrayWithoutFolders.push(file);
-        }
-      });
+      const stats = fs.statSync(path);
+      fileSize.push(Math.floor(stats.size / 1000));
     });
-    //How are these different?
-    // console.log(files)
+
+    //   fs.lstat(path, (err, stat) => {
+    //     if (!stat.isDirectory()) {
+    //       arrayWithoutFolders.push(file);
+    //     }
+    //   });
+    // });
+    // //How are these different?
+    // console.log(files);
     // console.log(arrayWithoutFolders);
-    //the one to use is files
+    // the one to use is files
 
     username().then(name => {
-      socket.emit("newUser", { name: name, files: files });
+      socket.emit("newUser", { name: name, files: files, size: fileSize });
     });
   });
 });
@@ -46,6 +52,10 @@ socket.on("reqStreamFromUser", data => {
   const fileToSend = data.file;
   const localFile = `${os.homedir}/Desktop/${process.env.FOLDER}/${fileToSend}`;
   console.log(`sending ${fileToSend}`);
+
+  let myNotification = new Notification("Sending file", {
+    body: `filename : ${fileToSend}`
+  });
 
   const stream = ss.createStream();
   ss(socket).emit("streamToServer", stream, {
@@ -72,6 +82,10 @@ ss(socket).on("fileStreamFromServer", (stream, data) => {
   console.log(stream);
   const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
   stream.pipe(fs.createWriteStream(testfile));
+
+  let myNotification = new Notification("You received file", {
+    body: `filename : ${data.name}`
+  });
 });
 
 // Functions
@@ -95,31 +109,26 @@ function getFileExtension(filename) {
   return a.pop();
 }
 
-// function getFilesizeInBytes(filename) {
-//   const stats = fs.statSync(filename);
-//   const fileSizeInBytes = stats.size;
-//   return fileSizeInBytes;
-// }
-
 function displayUser(user) {
-  // make list of files
-  // const fileExt = user.files.forEach(user =>
-  //   console.log(getFilesizeInBytes(user))
-  // );
-
   //.split(".")[0]
 
   let fileList = "";
-  user.files.sort();
-  user.files.forEach(file => {
+  // user.files.sort();
+  user.files.forEach((file, i) => {
+    if (user.size[i] === 0) {
+      user.size[i] = "";
+    }
     let fileblock = `<div class="filename" data-user=${user.id}>${file}</div>
                     <div class="fileInfo" data-user=${user.id}>
-                      <div class="fileType" data-user=${user.id}>
+                      <div class="extension" data-user=${user.id}>
                       ${getFileExtension(file)} </div>
+                      <div class="size" data-user=${user.id}>
+                      size :  ${user.size[i]} KB </div>
                     </div>`;
 
     fileList += `<div draggable="true" class="file"
-    data-user=${user.id} data-filename="${file}"> ${fileblock} </div>`;
+    data-user=${user.id} data-filename="${file}"
+    data-size="${user.size[i]}"> ${fileblock} </div>`;
   });
 
   let userblock = `<div class="user">
@@ -159,11 +168,13 @@ function addListeners() {
       let sender = curDrag.getAttribute("data-user");
       let filename = curDrag.getAttribute("data-filename");
       let receiver = e.target.getAttribute("data-user");
-      console.log(`rec: ${receiver}, sender: ${sender}`);
+      let size = curDrag.getAttribute("data-size");
+      // console.log(`rec: ${receiver}, sender: ${sender}`);
       let fileTransfer = {
         from: sender,
         to: receiver,
-        file: filename
+        file: filename,
+        size: size
       };
       socket.emit("fileTransferReq", fileTransfer);
     });

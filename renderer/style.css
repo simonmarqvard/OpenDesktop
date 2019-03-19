@@ -70,7 +70,7 @@ body {
 }
 
 .hover {
-  border-color: rgba(255, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .dragOutline {
@@ -87,15 +87,24 @@ body {
 }
 
 .fileInfo {
-  /* background: green; */
-  display: flex;
-  flex-direction: row;
+  /* background: blue; */
   height: 40%;
-}
-
-.fileType {
   font-size: 10px;
   width: 100%;
-  text-align: right;
+  display: flex;
+  flex-direction: row;
   margin: 5px 10px 10px 0px;
+}
+
+.extension {
+  width: 60%;
+  /* background-color: red; */
+  text-align: right;
+}
+
+.size {
+  width: 50%;
+  /* background-color: green; */
+  text-align: right;
+  margin-right: 10px;
 }
