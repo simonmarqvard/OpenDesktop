@@ -8,6 +8,7 @@ const username = require("username");
 // ----------------------------------------------
 
 const socket = io("http://localhost:8080");
+let arrayWithoutFolders = [];
 
 socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
@@ -15,10 +16,24 @@ socket.on("connect", () => {
   const electronFileTestFolder = process.env.FOLDER;
   const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
   let files = [];
+
   fs.readdir(testfolder, (err, files) => {
-    username().then(name =>
-      socket.emit("newUser", { name: name, files: files })
-    );
+    files.map(file => {
+      let path = `${testfolder}/${file}`;
+      fs.lstat(path, (err, stat) => {
+        if (!stat.isDirectory()) {
+          arrayWithoutFolders.push(file);
+        }
+      });
+    });
+    //How are these different?
+    // console.log(files)
+    // console.log(arrayWithoutFolders);
+    //the one to use is files
+
+    username().then(name => {
+      socket.emit("newUser", { name: name, files: files });
+    });
   });
 });
 
@@ -62,8 +77,6 @@ ss(socket).on("fileStreamFromServer", (stream, data) => {
 // Functions
 // ----------------------------------------------
 
-//socket
-// const socket = io("http://localhost:8080");
 const container = document.getElementById("containUserAndFiles");
 
 function updateUsers(onlineUsers) {
@@ -74,13 +87,39 @@ function updateUsers(onlineUsers) {
   addListeners();
 }
 
+function getFileExtension(filename) {
+  var a = filename.split(".");
+  if (a.length === 1 || (a[0] === "" && a.length === 2)) {
+    return "";
+  }
+  return a.pop();
+}
+
+// function getFilesizeInBytes(filename) {
+//   const stats = fs.statSync(filename);
+//   const fileSizeInBytes = stats.size;
+//   return fileSizeInBytes;
+// }
+
 function displayUser(user) {
   // make list of files
+  // const fileExt = user.files.forEach(user =>
+  //   console.log(getFilesizeInBytes(user))
+  // );
+
+  //.split(".")[0]
+
   let fileList = "";
   user.files.sort();
   user.files.forEach(file => {
+    let fileblock = `<div class="filename" data-user=${user.id}>${file}</div>
+                    <div class="fileInfo" data-user=${user.id}>
+                      <div class="fileType" data-user=${user.id}>
+                      ${getFileExtension(file)} </div>
+                    </div>`;
+
     fileList += `<div draggable="true" class="file"
-    data-user=${user.id} data-filename="${file}"> ${file} </div>`;
+    data-user=${user.id} data-filename="${file}"> ${fileblock} </div>`;
   });
 
   let userblock = `<div class="user">
@@ -116,6 +155,7 @@ function addListeners() {
     });
     list.addEventListener("drop", e => {
       e.preventDefault();
+      list.classList.remove("hover");
       let sender = curDrag.getAttribute("data-user");
       let filename = curDrag.getAttribute("data-filename");
       let receiver = e.target.getAttribute("data-user");

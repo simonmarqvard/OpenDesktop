@@ -28,7 +28,7 @@ body {
 .listOfFiles {
   margin-left: 10px;
   margin-right: 10px;
-  width: 300px;
+  width: 320px;
   padding: 20px;
   border: 2px solid transparent;
   transition: opacity 2s ease, border-color 1s ease;
@@ -38,15 +38,17 @@ body {
 
 .file {
   font-family: "Nunito", sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   color: white;
-  height: 50px;
-  line-height: 40px;
-  text-align: center;
-  vertical-align: middle;
+  height: 60px;
+  /* line-height: 40px; */
+  /* text-align: center; */
+  /* vertical-align: middle; */
   background-color: rgb(62, 71, 101);
   transition: background-color 0.7s ease;
   margin: 15px;
+  display: flex;
+  flex-direction: column;
   /* border: 1px solid; */
   /* border-radius: 5px; */
 }
@@ -74,4 +76,26 @@ body {
 .dragOutline {
   /* border-radius: 8px; */
   outline: 2px solid orange;
+}
+
+.filename {
+  line-height: 40px;
+  text-align: center;
+  vertical-align: middle;
+  /* background: red; */
+  height: 60%;
+}
+
+.fileInfo {
+  /* background: green; */
+  display: flex;
+  flex-direction: row;
+  height: 40%;
+}
+
+.fileType {
+  font-size: 10px;
+  width: 100%;
+  text-align: right;
+  margin: 5px 10px 10px 0px;
 }

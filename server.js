@@ -24,6 +24,7 @@ io.sockets.on("connection", socket => {
   console.log("we have a connection: " + socket.id);
 
   socket.on("newUser", userData => {
+    console.log(userData);
     console.log("server new user");
     let user = {
       id: socket.id,
@@ -35,12 +36,24 @@ io.sockets.on("connection", socket => {
     io.emit("updateUsers", arrayOfUsers);
   });
 
+  //does this work? if/else statement
   socket.on("fileTransferReq", data => {
+    console.log(data);
     const user = arrayOfUsers.find(user => user.id === data.to);
-    user.files.push(data.file);
-    io.emit("updateUsers", arrayOfUsers);
-    let fromUser = data.from;
-    io.to(fromUser).emit("reqStreamFromUser", data);
+    //hvis user har filen som bliver sendt så afbryd
+    const dataFile = user.files.find(obj => data.file === obj);
+    if (dataFile) {
+      console.log("file exists");
+    } else {
+      user.files.push(data.file);
+      io.emit("updateUsers", arrayOfUsers);
+      let fromUser = data.from;
+      io.to(fromUser).emit("reqStreamFromUser", data);
+    }
+    // user.files.push(data.file);
+    // io.emit("updateUsers", arrayOfUsers);
+    // let fromUser = data.from;
+    // io.to(fromUser).emit("reqStreamFromUser", data);
   });
 
   ss(socket).on("streamToServer", (stream, data) => {
