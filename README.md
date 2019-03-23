@@ -1,1 +1,1 @@
-Electron template to use for thesis examples 
+Electron sketch for Thesis experiment 1
