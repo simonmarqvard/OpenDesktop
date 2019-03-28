@@ -14,7 +14,7 @@ socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
 
   const electronFileTestFolder = process.env.FOLDER;
-  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+  const testfolder = `${os.homedir}/Desktop/`;
   let files = [];
 
   let fileSize = [];
