@@ -3,42 +3,39 @@ const ss = require("socket.io-stream");
 const fs = require("fs");
 const os = require("os");
 const username = require("username");
+const chokidar = require("chokidar");
 
 // Sockets
 // ----------------------------------------------
 
 const socket = io("http://localhost:8080");
 let arrayWithoutFolders = [];
+let filesOnly = [];
 
 socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
 
   const electronFileTestFolder = process.env.FOLDER;
-  const testfolder = `${os.homedir}/Desktop/`;
-  let files = [];
+  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+  let noFolders = [];
 
-  let fileSize = [];
+  // var watcher = chokidar.watch(testfolder, {
+  //   ignored: /(^|[\/\\])\../,
+  //   persistent: true
+  // });
+  //
+  // watcher.on("change", e => log(e));
 
   fs.readdir(testfolder, (err, files) => {
     files.map(file => {
       let path = `${testfolder}/${file}`;
       const stats = fs.statSync(path);
-      fileSize.push(Math.floor(stats.size / 1000));
+      if (!stats.isDirectory() && file !== ".DS_Store") {
+        noFolders.push(file);
+      }
     });
-
-    //   fs.lstat(path, (err, stat) => {
-    //     if (!stat.isDirectory()) {
-    //       arrayWithoutFolders.push(file);
-    //     }
-    //   });
-    // });
-    // //How are these different?
-    // console.log(files);
-    // console.log(arrayWithoutFolders);
-    // the one to use is files
-
     username().then(name => {
-      socket.emit("newUser", { name: name, files: files, size: fileSize });
+      socket.emit("newUser", { name: name, files: noFolders });
     });
   });
 });
@@ -113,22 +110,20 @@ function displayUser(user) {
   //.split(".")[0]
 
   let fileList = "";
-  // user.files.sort();
+  user.files.sort();
   user.files.forEach((file, i) => {
-    if (user.size[i] === 0) {
-      user.size[i] = "";
-    }
-    let fileblock = `<div class="filename" data-user=${user.id}>${file}</div>
-                    <div class="fileInfo" data-user=${user.id}>
-                      <div class="extension" data-user=${user.id}>
-                      ${getFileExtension(file)} </div>
-                      <div class="size" data-user=${user.id}>
-                      size :  ${user.size[i]} KB </div>
-                    </div>`;
+    let fileblock = ` <div class="info" data-user=${user.id}>
+                      <div class="filename" data-user=${user.id}>${file}</div>
+                      </div>
+                      <div class="extension" data-user=${
+                        user.id
+                      } data-extension='${getFileExtension(file)}'>
+                      ${getFileExtension(file)}</div>
+                    `;
 
     fileList += `<div draggable="true" class="file"
     data-user=${user.id} data-filename="${file}"
-    data-size="${user.size[i]}"> ${fileblock} </div>`;
+    data-size=""> ${fileblock} </div>`;
   });
 
   let userblock = `<div class="user">
@@ -168,13 +163,11 @@ function addListeners() {
       let sender = curDrag.getAttribute("data-user");
       let filename = curDrag.getAttribute("data-filename");
       let receiver = e.target.getAttribute("data-user");
-      let size = curDrag.getAttribute("data-size");
       // console.log(`rec: ${receiver}, sender: ${sender}`);
       let fileTransfer = {
         from: sender,
         to: receiver,
-        file: filename,
-        size: size
+        file: filename
       };
       socket.emit("fileTransferReq", fileTransfer);
     });

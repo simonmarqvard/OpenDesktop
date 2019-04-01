@@ -23,16 +23,18 @@ let user;
 io.sockets.on("connection", socket => {
   console.log("we have a connection: " + socket.id);
 
+  // socket.on("desktopChange", fileChange => {
+  //   console.log(fileChange);
+  //   console.log(socket.id);
+  // });
+
   socket.on("newUser", userData => {
-    console.log(userData);
     console.log("server new user");
     let user = {
       id: socket.id,
       username: userData.name,
-      files: userData.files,
-      size: userData.size
+      files: userData.files
     };
-    console.log(userData);
     arrayOfUsers.push(user);
     io.emit("updateUsers", arrayOfUsers);
   });
@@ -47,7 +49,6 @@ io.sockets.on("connection", socket => {
       console.log("file exists");
     } else {
       user.files.push(data.file);
-      user.size.push(data.size);
       io.emit("updateUsers", arrayOfUsers);
       let fromUser = data.from;
       io.to(fromUser).emit("reqStreamFromUser", data);

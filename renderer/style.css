@@ -31,30 +31,33 @@ body {
   width: 320px;
   padding: 20px;
   border: 2px solid transparent;
-  transition: opacity 2s ease, border-color 1s ease;
+  transition: opacity 2s ease, border-color 1s ease, background-color 1s ease;
   background-color: rgb(31, 38, 56);
-  /* border-radius: 5px; */
+}
+
+.listOfFiles:hover {
+  background-color: rgb(41, 48, 66);
 }
 
 .file {
-  font-family: "Nunito", sans-serif;
   font-size: 13px;
   color: white;
-  height: 60px;
-  /* line-height: 40px; */
-  /* text-align: center; */
-  /* vertical-align: middle; */
-  background-color: rgb(62, 71, 101);
-  transition: background-color 0.7s ease;
-  margin: 15px;
+  width: 100%;
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  /* border: 1px solid; */
-  /* border-radius: 5px; */
+  flex-direction: row;
+  background-color: rgb(62, 71, 101);
+  transition: background-color 0.7s ease, all 0.6s ease-in-out;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .file:hover {
   background: rgb(209, 171, 88);
+  top: 25px;
+  transform: scale(1.1);
 }
 
 #containUserAndFiles {
@@ -79,32 +82,68 @@ body {
 }
 
 .filename {
+  color: white;
+  font-family: "Gothic A1", sans-serif;
+  font-size: 14px;
+  white-space: nowrap;
+  width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 40px;
   text-align: center;
   vertical-align: middle;
-  /* background: red; */
+  margin-left: 20px;
   height: 60%;
 }
 
-.fileInfo {
-  /* background: blue; */
-  height: 40%;
-  font-size: 10px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  margin: 5px 10px 10px 0px;
+.info {
+  width: 80%;
+  color: rgb(62, 71, 101);
 }
 
 .extension {
-  width: 60%;
-  /* background-color: red; */
-  text-align: right;
+  width: 48px;
+  height: 48px;
 }
 
-.size {
-  width: 50%;
-  /* background-color: green; */
-  text-align: right;
-  margin-right: 10px;
+/* Icons */
+/*  load more types zip txt PDF*/
+
+.extension[data-extension$="docx"] {
+  content: url(http://icons.iconarchive.com/icons/dryicons/aesthetica-2/64/word-icon.png);
+}
+
+.extension[data-extension$="pdf"] {
+  content: url(http://icons.iconarchive.com/icons/alecive/flatwoken/48/Apps-Pdf-icon.png);
+}
+
+.extension[data-extension$="png"] {
+  content: url(http://icons.iconarchive.com/icons/custom-icon-design/flatastic-3/96/filetype-png-icon.png);
+}
+
+.extension[data-extension$="js"] {
+  content: url(http://icons.iconarchive.com/icons/franksouza183/fs/64/Mimetypes-javascript-icon.png);
+}
+
+.extension[data-extension$="jpeg"] {
+  content: url(http://icons.iconarchive.com/icons/gakuseisean/radium/48/jpeg-file-icon.png);
+}
+
+.extension[data-extension$="jpg"] {
+  content: url(http://icons.iconarchive.com/icons/gakuseisean/radium/48/jpeg-file-icon.png);
+}
+
+.extension[data-extension$="JPG"] {
+  content: url(http://icons.iconarchive.com/icons/gakuseisean/radium/48/jpeg-file-icon.png);
+}
+
+.extension[data-extension$="mov"] {
+  content: url(http://icons.iconarchive.com/icons/hadezign/hobbies/48/Movies-icon.png);
+}
+
+/* @media (max-width: 200px) {
+  .listOfFiles {
+    background-color: red;
+    width: 10%;
+  } */
 }

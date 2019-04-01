@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Tray } = require("electron");
 let win;
 
 require("electron-reload")(__dirname);
@@ -10,7 +10,6 @@ app.on("ready", () => {
   win = new BrowserWindow({
     width: 1000,
     height: 600,
-    opacity: 1,
     webPreferences: {
       nodeIntegration: true
     }
