@@ -8,7 +8,8 @@ const chokidar = require("chokidar");
 // Sockets
 // ----------------------------------------------
 
-const socket = io("http://localhost:8080");
+const socket = io("http://smj470.itp.io:8080");
+// const socket = io("http://localhost:8080");
 let arrayWithoutFolders = [];
 let filesOnly = [];
 
@@ -16,7 +17,7 @@ socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
 
   const electronFileTestFolder = process.env.FOLDER;
-  const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+  const testfolder = `${os.homedir}/Desktop/`;
   let noFolders = [];
 
   // var watcher = chokidar.watch(testfolder, {
@@ -30,7 +31,11 @@ socket.on("connect", () => {
     files.map(file => {
       let path = `${testfolder}/${file}`;
       const stats = fs.statSync(path);
-      if (!stats.isDirectory() && file !== ".DS_Store") {
+      if (
+        !stats.isDirectory() &&
+        file !== ".DS_Store" &&
+        file !== ".localized"
+      ) {
         noFolders.push(file);
       }
     });
@@ -47,7 +52,7 @@ socket.on("updateUsers", onlineUsers => {
 
 socket.on("reqStreamFromUser", data => {
   const fileToSend = data.file;
-  const localFile = `${os.homedir}/Desktop/${process.env.FOLDER}/${fileToSend}`;
+  const localFile = `${os.homedir}/Desktop/${fileToSend}`;
   console.log(`sending ${fileToSend}`);
 
   let myNotification = new Notification("Sending file", {
@@ -61,6 +66,7 @@ socket.on("reqStreamFromUser", data => {
   });
 
   const blobStream = fs.createReadStream(localFile).pipe(stream);
+  console.log(blobStream, "SIMON");
 
   blobStream.on("error", e => {
     console.log(e);
@@ -77,7 +83,7 @@ socket.on("reqStreamFromUser", data => {
 ss(socket).on("fileStreamFromServer", (stream, data) => {
   console.log("I received file");
   console.log(stream);
-  const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
+  const testfile = `${os.homedir}/Desktop/${data.name}`;
   stream.pipe(fs.createWriteStream(testfile));
 
   let myNotification = new Notification("You received file", {
@@ -127,7 +133,7 @@ function displayUser(user) {
   });
 
   let userblock = `<div class="user">
-        <div class="username"> ${user.username} </div>
+        <div class="username"> <p>${user.username}</p> </div>
         <div class="listOfFiles" data-user="${user.id}">${fileList}</div>
       </div>`;
 

@@ -16,14 +16,13 @@ body {
 
 .username {
   font-family: "Open Sans", sans-serif;
-  /* letter-spacing: 2px; */
-  /* font-size: 20px; */
   height: 50px;
-  line-height: 30px;
+  line-height: 50px;
   text-align: center;
   background-color: rgb(112, 132, 150);
   /* border-radius: 1px; */
 }
+
 
 .listOfFiles {
   margin-left: 10px;
@@ -47,7 +46,7 @@ body {
   display: flex;
   flex-direction: row;
   background-color: rgb(62, 71, 101);
-  transition: background-color 0.7s ease, all 0.6s ease-in-out;
+  transition: background-color 0.7s ease, all 0.4s ease-in-out;
   margin-top: 15px;
   margin-bottom: 15px;
   display: flex;
@@ -107,18 +106,30 @@ body {
 }
 
 /* Icons */
-/*  load more types zip txt PDF*/
+/*  load more types zip txt */
 
 .extension[data-extension$="docx"] {
   content: url(http://icons.iconarchive.com/icons/dryicons/aesthetica-2/64/word-icon.png);
 }
 
-.extension[data-extension$="pdf"] {
+.extension[data-extension$="zip"] {
+  content: url(http://icons.iconarchive.com/icons/pelfusion/flat-file-type/64/zip-icon.png);
+}
+
+.extension[data-extension$="pdf"]{
+  content: url(http://icons.iconarchive.com/icons/alecive/flatwoken/48/Apps-Pdf-icon.png);
+}
+
+.extension[data-extension$="PDF"]{
   content: url(http://icons.iconarchive.com/icons/alecive/flatwoken/48/Apps-Pdf-icon.png);
 }
 
 .extension[data-extension$="png"] {
   content: url(http://icons.iconarchive.com/icons/custom-icon-design/flatastic-3/96/filetype-png-icon.png);
+}
+
+.extension[data-extension$="txt"] {
+  content: url(http://icons.iconarchive.com/icons/trayse101/basic-filetypes-2/64/txt-icon.png);
 }
 
 .extension[data-extension$="js"] {
