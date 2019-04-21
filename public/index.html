@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <p>hello world</p>
+
+    <script>
+      let socket = io();
+
+      socket.on("connect", () => {
+        console.log("you connected to socket" + socket.id);
+      });
+
+      // require("./renderer.js");
+    </script>
+  </body>
+</html>

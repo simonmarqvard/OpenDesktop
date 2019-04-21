@@ -3,7 +3,7 @@ const ss = require("socket.io-stream");
 const fs = require("fs");
 const os = require("os");
 const username = require("username");
-const chokidar = require("chokidar");
+const watch = require("node-watch");
 
 // Sockets
 // ----------------------------------------------
@@ -12,35 +12,44 @@ const socket = io("http://smj470.itp.io:8080");
 // const socket = io("http://localhost:8080");
 let arrayWithoutFolders = [];
 let filesOnly = [];
+const electronFileTestFolder = process.env.FOLDER;
+// const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+const testfolder = `${os.homedir}/Desktop/`;
+let noFolders = [];
+let updateDesktop;
 
 socket.on("connect", () => {
   console.log("you connected to socket" + socket.id);
 
-  const electronFileTestFolder = process.env.FOLDER;
-  const testfolder = `${os.homedir}/Desktop/`;
-  let noFolders = [];
-
-  // var watcher = chokidar.watch(testfolder, {
-  //   ignored: /(^|[\/\\])\../,
-  //   persistent: true
-  // });
-  //
-  // watcher.on("change", e => log(e));
-
   fs.readdir(testfolder, (err, files) => {
     files.map(file => {
       let path = `${testfolder}/${file}`;
-      const stats = fs.statSync(path);
-      if (
-        !stats.isDirectory() &&
-        file !== ".DS_Store" &&
-        file !== ".localized"
-      ) {
+      const directories = fs.statSync(path).isDirectory();
+      if (!directories && file !== ".DS_Store" && file !== ".localized") {
         noFolders.push(file);
       }
     });
     username().then(name => {
       socket.emit("newUser", { name: name, files: noFolders });
+    });
+  });
+});
+
+watch(`${testfolder}`, { recursive: true }, function(evt, name) {
+  console.log(evt);
+  fs.readdir(testfolder, (err, files) => {
+    updateDesktop = [];
+    files.map(file => {
+      let path = `${testfolder}/${file}`;
+      const directories = fs.statSync(path).isDirectory();
+      if (!directories && file !== ".DS_Store" && file !== ".localized") {
+        updateDesktop.push(file);
+      }
+    });
+    let socketId = socket.id;
+    socket.emit("updateChangesToDesktop", {
+      id: socketId,
+      files: updateDesktop
     });
   });
 });
@@ -53,6 +62,7 @@ socket.on("updateUsers", onlineUsers => {
 socket.on("reqStreamFromUser", data => {
   const fileToSend = data.file;
   const localFile = `${os.homedir}/Desktop/${fileToSend}`;
+  // const localFile = `${os.homedir}/Desktop/${process.env.FOLDER}/${fileToSend}`;
   console.log(`sending ${fileToSend}`);
 
   let myNotification = new Notification("Sending file", {
@@ -84,6 +94,7 @@ ss(socket).on("fileStreamFromServer", (stream, data) => {
   console.log("I received file");
   console.log(stream);
   const testfile = `${os.homedir}/Desktop/${data.name}`;
+  // const testfile = `${os.homedir}/Desktop/${process.env.FOLDER}/${data.name}`;
   stream.pipe(fs.createWriteStream(testfile));
 
   let myNotification = new Notification("You received file", {

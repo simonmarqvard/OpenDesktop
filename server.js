@@ -5,7 +5,6 @@ const socket = require("socket.io");
 const ss = require("socket.io-stream");
 const http = require("http");
 const path = require("path");
-// let ss = require("socket.io-stream");
 
 server.use("/", express.static("public"));
 server.use(bodyParser.json());
@@ -23,11 +22,6 @@ let user;
 io.sockets.on("connection", socket => {
   console.log("we have a connection: " + socket.id);
 
-  // socket.on("desktopChange", fileChange => {
-  //   console.log(fileChange);
-  //   console.log(socket.id);
-  // });
-
   socket.on("newUser", userData => {
     console.log("server new user");
     let user = {
@@ -36,6 +30,16 @@ io.sockets.on("connection", socket => {
       files: userData.files
     };
     arrayOfUsers.push(user);
+    io.emit("updateUsers", arrayOfUsers);
+    console.log(arrayOfUsers);
+  });
+
+  socket.on("updateChangesToDesktop", updateData => {
+    const user = arrayOfUsers.find(user => user.id === updateData.id);
+    if (user) {
+      console.log("match");
+      user.files = updateData.files;
+    }
     io.emit("updateUsers", arrayOfUsers);
   });
 
@@ -53,10 +57,6 @@ io.sockets.on("connection", socket => {
       let fromUser = data.from;
       io.to(fromUser).emit("reqStreamFromUser", data);
     }
-    // user.files.push(data.file);
-    // io.emit("updateUsers", arrayOfUsers);
-    // let fromUser = data.from;
-    // io.to(fromUser).emit("reqStreamFromUser", data);
   });
 
   ss(socket).on("streamToServer", (stream, data) => {
