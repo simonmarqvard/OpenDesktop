@@ -9,10 +9,12 @@ const watch = require("node-watch");
 // ----------------------------------------------
 
 const socket = io("http://smj470.itp.io:8080");
+//NOTE: for local testing
 // const socket = io("http://localhost:8080");
 let arrayWithoutFolders = [];
 let filesOnly = [];
-const electronFileTestFolder = process.env.FOLDER;
+//NOTE: for local testing
+// const electronFileTestFolder = process.env.FOLDER;
 // const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
 const testfolder = `${os.homedir}/Desktop/`;
 let noFolders = [];
@@ -124,7 +126,6 @@ function getFileExtension(filename) {
 }
 
 function displayUser(user) {
-  //.split(".")[0]
 
   let fileList = "";
   user.files.sort();

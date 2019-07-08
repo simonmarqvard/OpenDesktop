@@ -22,7 +22,30 @@ I wanted to see what we could do with software if we didn't care about safety. T
 
 <h3> To test </h3>
 <p> Download the repository </p>
+<p> to run the application type: </p>
 
 ```
 [electronSocket]$ npm run client
+```
+
+<p> Doing this will connect you to my server and potentially other users <p>
+
+<h3> To test it locally </h3>
+<p> start a local server on port 8080 </p>
+```
+[electronSocket]$ npm start
+```
+<p> Go to renderer/renderer.js and change the following<p>
+```Javascript
+const socket = io("http://smj470.itp.io:8080");
+//NOTE: for local testing
+// const socket = io("http://localhost:8080");
+let arrayWithoutFolders = [];
+let filesOnly = [];
+//NOTE: for local testing
+// const electronFileTestFolder = process.env.FOLDER;
+// const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+const testfolder = `${os.homedir}/Desktop/`;
+let noFolders = [];
+let updateDesktop;
 ```
