@@ -70,7 +70,7 @@ let updateDesktop;
 ```
 
 <p> This will redirect to your localserver and change the testfolder to the folder we are about to
-create on the desktop. Make similar changes in line 64 and 96 to redirect to the right folder. </p>
+create on the desktop. Make similar changes in line 67 and 99 to redirect to the right folder. </p>
 
 <p> Create a folder on your desktop called myFolder and run the application with directions to that folder </p>
 
