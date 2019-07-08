@@ -78,7 +78,7 @@ create on the desktop. Make similar changes in line 64 and 96 to redirect to the
 [electronSocket]$ Folder=myFolder npm run client
 ```
 
-<p> From this point you can test the application by running it from several folders </p>
+<p> Now you can test the filetransfer between folders by running it from several different folders fx </p>
 
 ```
 [electronSocket]$ Folder=myFolder2 npm run client
