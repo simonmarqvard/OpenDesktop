@@ -22,8 +22,7 @@ I wanted to see what we could do with software if we didn't care about safety. T
 
 <h3> To test </h3>
 <p> Download the repository </p>
-<p> 
+
 ```
 [electronSocket]$ npm run client
 ```
-</p>
