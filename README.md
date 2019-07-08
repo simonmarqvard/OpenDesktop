@@ -1,6 +1,6 @@
 <h1> Open Desktop </h1>
 
-<h2> Collaborate file sharing project built using sockets.io, electron and socket-stream </h2>
+<h2> Collaborative file sharing project built using sockets.io, electron and socket-stream </h2>
 
 ![](OpenDesk.gif)
 
