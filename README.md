@@ -32,10 +32,13 @@ I wanted to see what we could do with software if we didn't care about safety. T
 
 <h3> To test it locally </h3>
 <p> start a local server on port 8080 </p>
+
 ```
 [electronSocket]$ npm start
 ```
-<p> Go to renderer/renderer.js and change the following<p>
+
+<p> Go to renderer/renderer.js and change the following</p>
+
 ```Javascript
 const socket = io("http://smj470.itp.io:8080");
 //NOTE: for local testing
