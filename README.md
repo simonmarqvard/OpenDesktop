@@ -12,9 +12,18 @@ this application there is no upload or download - simply the movement of
 files.
 </p>
 
-<p>
 <h3> Before testing: Be aware </h3>
+<p>
 The application is part of an exploration, investigating the question: "Would
 more creative applications in software be unleashed if we didn't start by
-saddling designers and developers with privacy and security concerns?" I
+saddling designers and developers with privacy and security concerns?".
+I wanted to see what we could do with software if we didn't care about safety. This application simplifies filesharing between computers - allowing everyone to see files on your desktop. By downloading and starting this application you are potentially running the risk of having your files stolen from your desktop or having other users send you malicious files. Another potential option is to test the repository locally - more information on that later.    
 <p>
+
+<h3> To test </h3>
+<p> Download the repository </p>
+<p> 
+```
+[electronSocket]$ npm run client
+```
+</p>
