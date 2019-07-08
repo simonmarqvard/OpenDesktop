@@ -28,10 +28,10 @@ I wanted to see what we could do with software if we didn't care about safety. T
 [electronSocket]$ npm run client
 ```
 
-<p> Doing this will connect you to my server and potentially other users <p>
+<p> Doing this will connect you to my server and potentially other users. <p>
 
 <h3> To test it locally </h3>
-<p> start a local server on port 8080 </p>
+<p> Start a local server on port 8080 by typing </p>
 
 ```
 [electronSocket]$ npm start
@@ -69,12 +69,17 @@ let noFolders = [];
 let updateDesktop;
 ```
 
-<p> this will redirect to your localserver and change the testfolder </p>
-<p> make similar changes in line 64 and 96 </p>
+<p> This will redirect to your localserver and change the testfolder to the folder we are about to
+create on the desktop. Make similar changes in line 64 and 96 to redirect to the right folder. </p>
 
-<p> Now create a folder on your desktop called myFolder <p>
-<p> and run the application with directions to that folder </p>
+<p> Create a folder on your desktop called myFolder and run the application with directions to that folder </p>
 
 ```
 [electronSocket]$ Folder=myFolder npm run client
+```
+
+<p> From this point you can test the application by running it from several folders </p>
+
+```
+[electronSocket]$ Folder=myFolder2 npm run client
 ```
