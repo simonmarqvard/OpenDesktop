@@ -52,3 +52,29 @@ const testfolder = `${os.homedir}/Desktop/`;
 let noFolders = [];
 let updateDesktop;
 ```
+
+<p> to the following <p>
+
+```Javascript
+//const socket = io("http://smj470.itp.io:8080");
+//NOTE: for local testing
+const socket = io("http://localhost:8080");
+let arrayWithoutFolders = [];
+let filesOnly = [];
+//NOTE: for local testing
+ const electronFileTestFolder = process.env.FOLDER;
+ const testfolder = `${os.homedir}/Desktop/${electronFileTestFolder}`;
+//const testfolder = `${os.homedir}/Desktop/`;
+let noFolders = [];
+let updateDesktop;
+```
+
+<p> this will redirect to your localserver and change the testfolder </p>
+<p> make similar changes in line 64 and 96 </p>
+
+<p> Now create a folder on your desktop called myFolder <p>
+<p> and run the application with directions to that folder </p>
+
+```
+[electronSocket]$ Folder=myFolder npm run client
+```
