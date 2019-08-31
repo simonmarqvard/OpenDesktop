@@ -21,15 +21,15 @@ I wanted to see what we could do with software if we didn't care about safety. T
 <p>
 
 <h3> To test </h3>
-<p> Clone/Download the repository and change directory into the projectfolder </p>
+<p> Download the repository and change directory into the projectfolder </p>
 
-install the necessary node module dependencies 
+<p> Install the necessary node module dependencies </p>
 
 ```
 [electronSocket]$ npm install
 ```
 
-<p> to run the application type: </p>
+<p> Run the application with: </p>
 
 ```
 [electronSocket]$ npm run client
