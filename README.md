@@ -21,9 +21,9 @@ I wanted to see what we could do with software if we didn't care about safety. T
 <p>
 
 <h3> To test </h3>
-<p> Download the repository and change directory into the projectfolder </p>
+<p> Download the repository and change directory into the projectfolder. </p>
 
-<p> Install the necessary node module dependencies </p>
+<p> Install the necessary node module dependencies. </p>
 
 ```
 [electronSocket]$ npm install
