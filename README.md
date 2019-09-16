@@ -91,7 +91,7 @@ create on the desktop. Make similar changes in line 67 and 99 to redirect to the
 [electronSocket]$ Folder=myFolder2 npm run client
 ```
 
-<p> Overview of program architecture </p>
+<h3> Overview of program architecture </h3>
 
 ![](archi2.png)
 
